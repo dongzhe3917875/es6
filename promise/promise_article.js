@@ -16,18 +16,37 @@ let get = url => {
   })
 }
 
+// 转化为JSON
 let getJSON = url => get(url).then(JSON.parse)
 
+// 加载标题
 let getStory = (url, story) => getJSON(url).then(response => {
   story.innerHTML = response.heading
   return response
 })
 
-let getChapter =  (story) => {
+// 加载单个章节
+
+let getSpecifyChapter =  (story) => {
+  // 闭包
   let storyPromise
+  // 单例模式
   storyPromise = storyPromise || getStory('story.json', story)
-  var getSingleChapter = (index) => storyPromise.then((storys) => {
-    var next = storys.chapterUrls[index + 1] && true || false
+  return (index) => storyPromise.then((storys) => {
+    getJSON(storys.chapterUrls[index]).then((chapter => {
+      addHtmlToPage(chapter.html, story)
+    }))
+  })
+}
+
+// 依次加载章节
+let getChapter =  (story) => {
+  // 闭包
+  let storyPromise
+  // 单例模式
+  storyPromise = storyPromise || getStory('story.json', story)
+  let getSingleChapter = (index) => storyPromise.then((storys) => {
+    let next = storys.chapterUrls[index + 1] && true || false
     getJSON(storys.chapterUrls[index]).then((chapter => {
       addHtmlToPage(chapter.html, story)
       // 在这里利用了迭代器模式
