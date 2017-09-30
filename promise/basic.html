@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Promises test</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="network-fake">
+  <label><input type="checkbox"> Fake network delay</label>
+</div>
+<div class="story"></div>
+<svg class="spinner" viewBox="0 0 100 100" width="20" height="20">
+  <circle cx="50" cy="50" r="42" transform="rotate(-90,50,50)" />
+</svg>
+<script src="promise_article.js"></script>
+<script>
+  var story = document.querySelector('.story')
+  console.log(getJSON)
+  // 由于 JSON.parse() 采用单一参数并返回改变的值，因此我们可以将其简化
+//  get('story.json')
+//    .then(JSON.parse, (err) => console.log('failed', err))
+  getJSON('story.json')
+    .then(response => story.innerHTML = response.heading, document.querySelector('.spinner').style.display = 'none')
+</script>
+</body>
+</html>

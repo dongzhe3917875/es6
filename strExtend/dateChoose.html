@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>chooseDate</title>
+</head>
+
+<body>
+  <input type="text" value="YYYY-MM-DD" id='chooseDate'>
+  <button id="getValue">get value</button>
+</body>
+<script>
+window.onload = function() {
+	// 用selectionStart 和 selectionEnd 可以拿到focus的位置 以及选中的起始位置
+  var padding = 'YYYY-MM-DD';
+
+  var {length: paddingLength} = padding;
+  var chooseDate = document.getElementById('chooseDate');
+  var getValue = document.getElementById('getValue');
+  var value = "";
+  var currentValue = "";
+  var YearExp = /^(Y|[1-9])(Y|[0-9]){3}$/;
+  var MonthExp = /^(((M|0)(M|[1-9]))|((M|1)(M|[0-2])))$/;
+  var DayExp = /^(((D|0)(D|[1-9]))|((D|[1-2])(D|[0-9]))|((D|3)(D|[0-1])))$/
+  chooseDate.focus();
+  chooseDate.onkeyup = function(event) {
+    console.log(this.value);
+    var input_value = String.fromCharCode(event.keyCode);
+    if (/^\d{1}$/.test(input_value)) {
+    	console.log(this.selectionStart)
+    	if (this.selectionStart === this.selectionEnd && (this.selectionStart <= paddingLength)) {
+    		let selectionStart = this.selectionStart;
+    		if (padding.charAt(selectionStart - 1) !== '-') {
+    			var paddingCopy = padding.split('');
+    			paddingCopy.splice(selectionStart - 1, 1, input_value);
+    			paddingCopy = paddingCopy.join('');
+
+    			if (!YearExp.test(paddingCopy.slice(0, 4))) {
+    				this.value = padding;
+    				this.setSelectionRange(selectionStart - 1, selectionStart - 1);
+    				return false;
+    			}
+
+    			if (!MonthExp.test(paddingCopy.slice(5, 7))) {
+    				this.value = padding;
+    				this.setSelectionRange(selectionStart - 1, selectionStart - 1);
+    				return false;
+    			}
+
+    			if (!DayExp.test(paddingCopy.slice(8, 10))) {
+    				this.value = padding;
+    				this.setSelectionRange(selectionStart - 1, selectionStart - 1);
+    				return false;
+    			}
+
+    			padding = paddingCopy;
+    			this.value = padding;
+    			if (padding.charAt(selectionStart) === '-') {
+    				this.setSelectionRange(selectionStart + 1, selectionStart + 1)
+    			} else {
+    				this.setSelectionRange(selectionStart, selectionStart);		
+    			}
+    		}
+    	}
+    }
+    if (!/^(Y|[1-9])(Y|[0-9]){3}-(M|[0-9]){2}-(D|[0-9]){2}$/.test(this.value)) {
+    	let selectionStart = this.selectionStart
+    	this.value = currentValue || padding;
+    	let {length: len} = value;
+    	if (event.keyCode == 8) {
+    		this.setSelectionRange(selectionStart + 1, selectionStart + 1);
+    	} else {
+    		this.setSelectionRange(selectionStart - 1, selectionStart - 1);
+    	}
+    	return false;
+    }
+  }
+
+  getValue.onclick = function() {
+  	console.log(padding);
+  }
+}
+</script>
+</html>
