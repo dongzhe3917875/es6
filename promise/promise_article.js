@@ -62,19 +62,46 @@ let getSequenceChapter = (source = 'story.json', story) => {
   // 单例模式
   storyPromise = storyPromise || getStory(source, story)
   return storyPromise
-    .then(storys => {
-      // TODO: for each url in story.chapterUrls, fetch &amp; display
-      // 将 chapterUrls 数组转变为 promise 序列
-      // // Start off with a promise that always resolves Promise.resolve()
-      storys.chapterUrls.reduce((sequence, chapterUrl) => {
-        return sequence.then(() => getJSON(chapterUrl)).then(chapter => addHtmlToPage(chapter.html, story))
-      }, Promise.resolve())
-    })
+    // TODO: for each url in story.chapterUrls, fetch &amp; display
+    // 将 chapterUrls 数组转变为 promise 序列
+    // // Start off with a promise that always resolves Promise.resolve()
+    .then(storys => storys.chapterUrls.reduce((sequence, chapterUrl) => sequence.then(() => getJSON(chapterUrl))
+        .then(chapter => addHtmlToPage(chapter.html, story)), Promise.resolve())
+    )
     // Catch any error that happened along the way
     .catch(err => addTextToPage("Argh, broken: " + err.message, story))
     .then(() => document.querySelector('.spinner').style.display = 'none')
 }
 
+let getAllChapter = (source = 'story.json', story) => {
+  // 闭包
+  let storyPromise
+  // 单例模式
+  storyPromise = storyPromise || getStory(source, story)
+  return storyPromise
+    // Take an array of promises and wait on them all
+    .then(storys => Promise.all(storys.chapterUrls.map(getJSON)))
+    .then(chapters => chapters.forEach(chapter => addHtmlToPage(chapter.html, story)))
+    .catch(err => addTextToPage("Argh, broken: " + err.message, story))
+    .then(() => document.querySelector('.spinner').style.display = 'none')
+}
+
+// 同时下载 但要让先下载完的显示
+// 比如 1下载完 往后看2下载完了没 没下载完 此时3可能已经下载完了 等2下载完 2， 3就可以直接显示了
+let getAllSequenceChapters = (source = 'story.json', story) => {
+  // 闭包
+  let storyPromise
+  // 单例模式
+  storyPromise = storyPromise || getStory(source, story)
+  return storyPromise
+  // Take an array of promises and wait on them all
+    .then(storys => storys.chapterUrls
+      .map(getJSON)
+      .reduce((sequence, chapterPromise) => sequence.then(() => chapterPromise)
+        .then(chapter => addHtmlToPage(chapter.html, story)), Promise.resolve()))
+    .catch(err => addTextToPage("Argh, broken: " + err.message, story))
+    .then(() => document.querySelector('.spinner').style.display = 'none')
+}
 
 let addHtmlToPage = (html, page) => {
   let node = document.createElement('div')

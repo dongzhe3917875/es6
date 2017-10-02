@@ -35,4 +35,9 @@ get('story.json').then(function(response) {
 
 // then(func1).catch(func2) 拒绝时两者皆会调用
 
-
+// promise all
+// Promise.all 包含一组 promise，并创建一个在所有内容成功完成
+// 后执行的 promise。您将获得一组结果（即一组 promise 执行的结果），其顺序与您与传入 promise 的顺序相同。
+Promise.all(arrayOfPromises).then(function(arrayOfResults) {
+  //...
+})
