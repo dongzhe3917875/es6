@@ -15,14 +15,7 @@
 <script src="promise_article.js"></script>
 <script>
   let story = document.querySelector('.story')
-  // 错误被捕获而后续代码继续执行，因此，转环总是被隐藏，这正是我们想要的
-  // 默认
-  let getSingleChapter = getSpecifyChapter(undefined, story)
-  // 404错误
-//  let getSingleChapter = getSpecifyChapter('404.json', story)
-  // 解析错误
-//  let getSingleChapter = getSpecifyChapter('error.json', story)
-  getSingleChapter(0).then(() => document.querySelector('.spinner').style.display = 'none')
+  let getSingleChapter = getSequenceChapter(undefined, story)
 </script>
 </body>
 </html>
