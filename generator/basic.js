@@ -35,3 +35,6 @@ let gError = genError(1)
 gError.next()
 gError.throw('出错了')
 // 出错了
+
+// yield表达式如果用在另一个表达式之中，必须放在圆括号里面。
+// yield表达式用作函数参数或放在赋值表达式的右边，可以不加括号。
