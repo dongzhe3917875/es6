@@ -8,6 +8,14 @@
   <title>Document</title>
 </head>
 <body>
+<div class="div">1</div>
+<div class="div">2</div>
+<div class="div">3</div>
 </body>
-<script src="async.js"></script>
+<script>
+  // 或者
+  NodeList.prototype[Symbol.iterator] = [][Symbol.iterator];
+  // 扩展运算符（...）也会调用默认的 Iterator 接口。
+  console.log([...document.querySelectorAll('div')]) // 可以执行了
+</script>
 </html>
