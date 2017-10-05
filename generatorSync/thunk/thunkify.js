@@ -48,6 +48,7 @@ let run = fn => {
 }
 var g = function* (){
   var f1 = yield {func: readFileThunk('./text.txt', 'utf-8'), callback: 'text1'}
+  console.log('f1', f1)
   var f2 = yield {func: readFileThunk('./text.txt', 'utf-8'), callback: 'text2'}
 };
 
